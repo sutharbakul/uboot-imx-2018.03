@@ -1,0 +1,38 @@
+#!/bin/bash
+
+RED=$'\x1b[31m' # Sets text to red
+GRN=$'\x1b[92m' # Sets text to green
+YLW=$'\x1b[93m' # Sets text to yellow
+BLU=$'\x1b[94m' # Sets text to blue
+WHT=$'\x1b[97m' # Sets text to white
+
+usage()
+{
+  echo -e "${WHT}./build clean        - to clean"
+  echo -e "${WHT}./build configure    - to configure u-boot"
+  echo -e "${WHT}./build menuconfig   - to customize u-boot"
+  echo -e "${WHT}./build c1           - to build u-boot"
+}
+
+C1="mx6var_som_sd_defconfig"
+
+export ARCH=arm
+source /opt/fslc-framebuffer/2.6.2/environment-setup-armv7at2hf-neon-fslc-linux-gnueabi
+arm-fslc-linux-gnueabi-gcc -v
+export CROSS_COMPILE=arm-fslc-linux-gnueabi-
+
+echo -e "${GRN}[ OK ] target compiler setup ${WHT}"
+if [ "$1" = "menuconfig" ];then
+  make $1
+elif [ "$1" = "configure" ];then
+  make $C1
+  echo -e "${GRN}[ OK ] uboot configuration for c1 ${WHT}"
+elif [ "$1" = "clean" ];then
+  make distclean
+  echo -e "${GRN}[ OK ] clean ${WHT}"
+elif [ "$1" = "c1" ];then
+  make -j4
+  echo -e "${GRN}[ OK ] build success ${WHT}"
+else
+  usage
+fi
